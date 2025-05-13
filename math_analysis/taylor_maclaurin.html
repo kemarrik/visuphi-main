@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Формулы Тейлора и Маклорена</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/math.css">
+</head>
+<body>
+    <div class="background">
+        <div class="particles"></div>
+    </div>
+    <div id="canvas-container"></div>
+
+    <div class="theory-content">
+        <h1>Формулы Тейлора и Маклорена</h1>
+        <div class="neon-line"></div>
+
+        <video autoplay loop muted playsinline>
+            <source src="../media/TaylorMaclaurinSeries.mp4" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+
+        <h2>Формула Тейлора с остатком Пеано</h2>
+        <p>Для функции \( f(x) \), дифференцируемой \( n \) раз в точке \( a \):</p>
+        <p>\[ f(x) = \sum_{k=0}^n \frac{f^{(k)}(a)}{k!}(x-a)^k + o((x-a)^n) \]</p>
+
+        <h2>Формула Тейлора с остатком Лагранжа</h2>
+        <p>Для функции \( f(x) \), имеющей \( (n+1) \)-ую производную на \( [a,x] \):</p>
+        <p>\[ f(x) = \sum_{k=0}^n \frac{f^{(k)}(a)}{k!}(x-a)^k + \frac{f^{(n+1)}(c)}{(n+1)!}(x-a)^{n+1} \]</p>
+        <p>где \( c \in (a,x) \)</p>
+
+        <h2>Ряд Маклорена</h2>
+        <p>Частный случай при \( a = 0 \):</p>
+        <p>\[ f(x) = \sum_{k=0}^{\infty} \frac{f^{(k)}(0)}{k!} x^k \]</p>
+
+        <h3>Пример для \( e^x \):</h3>
+        <p>\[ e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots \]</p>
+    </div>
+
+    <button class="back-button" onclick="window.location.href='../index.html'">На главную</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script>
+        // Three.js анимация (аналогичная главной странице)
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const geometry = new THREE.IcosahedronGeometry(window.innerWidth < 768 ? 10 : 15, 0);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x0057B7,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.4
+        });
+        const icosahedron = new THREE.Mesh(geometry, material);
+        scene.add(icosahedron);
+
+        camera.position.z = window.innerWidth < 768 ? 25 : 40;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            icosahedron.rotation.x += 0.005;
+            icosahedron.rotation.y += 0.008;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth/window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

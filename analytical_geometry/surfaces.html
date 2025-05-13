@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поверхности второго порядка</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/math.css">
+</head>
+<body>
+    <div class="background">
+        <div class="particles"></div>
+    </div>
+    <div id="canvas-container"></div>
+
+    <div class="theory-content">
+        <h1>Поверхности второго порядка</h1>
+        <div class="neon-line"></div>
+
+        <h2>1. Эллипсоид</h2>
+        <p>\[ \frac{x^2}{a^2} + \frac{y^2}{b^2} + \frac{z^2}{c^2} = 1 \]</p>
+        <p>При \( a = b = c \) - сфера.</p>
+
+        <h2>2. Гиперболоиды</h2>
+        <h3>Однополостный:</h3>
+        <p>\[ \frac{x^2}{a^2} + \frac{y^2}{b^2} - \frac{z^2}{c^2} = 1 \]</p>
+
+        <h3>Двуполостный:</h3>
+        <p>\[ \frac{x^2}{a^2} + \frac{y^2}{b^2} - \frac{z^2}{c^2} = -1 \]</p>
+
+        <h2>3. Параболоиды</h2>
+        <h3>Эллиптический:</h3>
+        <p>\[ \frac{x^2}{a^2} + \frac{y^2}{b^2} = 2z \]</p>
+
+        <h3>Гиперболический:</h3>
+        <p>\[ \frac{x^2}{a^2} - \frac{y^2}{b^2} = 2z \]</p>
+
+        <h2>4. Конус</h2>
+        <p>\[ \frac{x^2}{a^2} + \frac{y^2}{b^2} - \frac{z^2}{c^2} = 0 \]</p>
+
+        <h2>5. Цилиндры</h2>
+        <p>Эллиптический: \( \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \)</p>
+        <p>Гиперболический: \( \frac{x^2}{a^2} - \frac{y^2}{b^2} = 1 \)</p>
+        <p>Параболический: \( x^2 = 2py \)</p>
+    </div>
+
+    <button class="back-button" onclick="window.location.href='../index.html'">На главную</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script>
+        // Three.js анимация
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const geometry = new THREE.IcosahedronGeometry(window.innerWidth < 768 ? 10 : 15, 0);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x0057B7,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.4
+        });
+        const icosahedron = new THREE.Mesh(geometry, material);
+        scene.add(icosahedron);
+
+        camera.position.z = window.innerWidth < 768 ? 25 : 40;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            icosahedron.rotation.x += 0.005;
+            icosahedron.rotation.y += 0.008;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth/window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

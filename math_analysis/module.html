@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Модуль колебаний</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/math.css">
+</head>
+<body>
+    <div class="background">
+        <div class="particles"></div>
+    </div>
+    <div id="canvas-container"></div>
+
+    <div class="theory-content">
+        <h1>Функция модуля колебаний</h1>
+        <div class="neon-line"></div>
+
+        <video autoplay loop muted playsinline>
+            <source src="../media/module.mp4" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+
+        <h2>Определение равномерной непрерывности</h2>
+        <p>Функция \( f \), заданная на отрезке \( [a, b] \), называется <strong>равномерно непрерывной</strong>, если:</p>
+        <p>\[ \forall \varepsilon > 0 \ \exists \delta > 0 : \forall x_1, x_2 \in [a, b], |x_1 - x_2| < \delta \Rightarrow |f(x_1) - f(x_2)| < \varepsilon \]</p>
+
+        <h2>Теорема Кантора</h2>
+        <p>Функция, непрерывная на отрезке, равномерно непрерывна на нём.</p>
+
+        <h3>Доказательство:</h3>
+        <p>Предположим противное. Тогда существует \( \varepsilon_0 > 0 \) и последовательности \( x_n, x_n' \):</p>
+        <p>\[ |x_n - x_n'| < \frac{1}{n}, \quad |f(x_n) - f(x_n')| \geq \varepsilon_0 \]</p>
+        <p>По теореме Больцано-Вейерштрасса выделяем сходящуюся подпоследовательность \( x_{n_k} \to x_0 \). Тогда:</p>
+        <p>\[ f(x_{n_k}) \to f(x_0), \quad f(x_{n_k}') \to f(x_0) \]</p>
+        <p>Противоречие с \( |f(x_{n_k}') - f(x_{n_k})| \geq \varepsilon_0 \).</p>
+
+        <h2>Колебание функции</h2>
+        <p>\[ \omega(f; [a, b]) = \sup_{x, x' \in [a, b]} |f(x) - f(x')| \]</p>
+    </div>
+
+    <button class="back-button" onclick="window.location.href='../index.html'">На главную</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script>
+        // Three.js анимация
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const geometry = new THREE.IcosahedronGeometry(window.innerWidth < 768 ? 10 : 15, 0);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x0057B7,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.4
+        });
+        const icosahedron = new THREE.Mesh(geometry, material);
+        scene.add(icosahedron);
+
+        camera.position.z = window.innerWidth < 768 ? 25 : 40;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            icosahedron.rotation.x += 0.005;
+            icosahedron.rotation.y += 0.008;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth/window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

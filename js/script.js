@@ -1,3 +1,4 @@
+// Three.js анимация
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ alpha: true });
@@ -5,31 +6,27 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
 const geometry = new THREE.IcosahedronGeometry(window.innerWidth < 768 ? 15 : 25, 0);
-const material = new THREE.MeshBasicMaterial({ color: 0x0057B7, wireframe: true, transparent: true, opacity: 0.6 });
+const material = new THREE.MeshBasicMaterial({
+    color: 0x0057B7,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.6
+});
 const icosahedron = new THREE.Mesh(geometry, material);
 scene.add(icosahedron);
 
 camera.position.z = window.innerWidth < 768 ? 40 : 60;
 
-let time = 0;
+// Анимация
 function animate() {
     requestAnimationFrame(animate);
-    time += 0.05;
-    const scale = 1 + 0.4 * Math.sin(time * 0.5);
-    icosahedron.scale.set(scale, scale, scale);
     icosahedron.rotation.x += 0.008;
     icosahedron.rotation.y += 0.01;
-    material.opacity = 0.4 + 0.3 * Math.sin(time * 0.4);
     renderer.render(scene, camera);
 }
 animate();
 
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
+// Реакция на движение мыши
 document.addEventListener('mousemove', (e) => {
     const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
     const mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
@@ -37,45 +34,54 @@ document.addEventListener('mousemove', (e) => {
     icosahedron.rotation.y = mouseX * 0.5;
 });
 
+// Данные для модального окна
 const subjectsData = {
     "math_analysis": [
-        { name: "Тейлор и Маклорен", url: "math_analysis/taylor-maclaurin" },
-        { name: "Лагранж, Коши и Ролль", url: "math_analysis/lagrange-cauchy-rolle" },
-        { name: "Модуль колебаний", url: "math_analysis/module" }
+        { name: "Тейлор и Маклорен", url: "math_analysis/taylor-maclaurin.html" },
+        { name: "Лагранж, Коши и Ролль", url: "math_analysis/lagrange-cauchy-rolle.html" },
+        { name: "Модуль колебаний", url: "math_analysis/module.html" }
     ],
     "analytical_geometry": [
-        { name: "Поверхности второго порядка", url: "analytical_geometry/surfaces" }
+        { name: "Поверхности второго порядка", url: "analytical_geometry/surfaces.html" }
     ]
 };
 
-const subjects = document.querySelectorAll('.subject-card');
-const topicsModal = document.getElementById('topicsModal');
-const topicsContent = document.getElementById('topicsContent');
-
-subjects.forEach(subject => {
+// Обработчики для карточек предметов
+document.querySelectorAll('.subject-card').forEach(subject => {
     subject.addEventListener('click', () => {
-        const subjectKey = subject.getAttribute('data-subject');
-        const topics = subjectsData[subjectKey];
-        
+        if (subject.classList.contains('inactive')) return;
+
+        const subjectKey = subject.dataset.subject;
+        const topicsContent = document.getElementById('topicsContent');
         topicsContent.innerHTML = '';
-        topics.forEach((topic, index) => {
-            const topicDiv = document.createElement('div');
-            topicDiv.classList.add('topic');
-            topicDiv.textContent = topic.name;
-            topicDiv.style.animationDelay = `${index * 0.1}s`;
-            topicDiv.addEventListener('click', () => {
-                // Переход по ссылке в текущем окне
+
+        subjectsData[subjectKey].forEach((topic, index) => {
+            const topicElement = document.createElement('div');
+            topicElement.className = 'topic';
+            topicElement.textContent = topic.name;
+            topicElement.style.animationDelay = `${index * 0.1}s`;
+            topicElement.addEventListener('click', () => {
                 window.location.href = topic.url;
             });
-            topicsContent.appendChild(topicDiv);
+            topicsContent.appendChild(topicElement);
         });
-        
-        topicsModal.style.display = 'flex';
+
+        document.getElementById('topicsModal').style.display = 'flex';
     });
 });
 
+// Закрытие модального окна
 document.addEventListener('click', (e) => {
-    if (!topicsContent.contains(e.target) && !Array.from(subjects).includes(e.target)) {
-        topicsModal.style.display = 'none';
+    const modal = document.getElementById('topicsModal');
+    if (!document.getElementById('topicsContent').contains(e.target) &&
+        !Array.from(document.querySelectorAll('.subject-card')).includes(e.target)) {
+        modal.style.display = 'none';
     }
+});
+
+// Ресайз
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 });

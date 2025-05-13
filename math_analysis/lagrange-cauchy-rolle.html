@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Теоремы Ролля, Коши и Лагранжа</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/math.css">
+</head>
+<body>
+    <div class="background">
+        <div class="particles"></div>
+    </div>
+    <div id="canvas-container"></div>
+
+    <div class="theory-content">
+        <h1>Теоремы Ролля, Коши и Лагранжа</h1>
+        <div class="neon-line"></div>
+
+        <h2>Теорема Ролля</h2>
+        <p>Если функция \( f \) непрерывна на \([a, b]\), дифференцируема на \((a, b)\) и \( f(a) = f(b) \), то:</p>
+        <p>\[ \exists c \in (a, b) : f'(c) = 0 \]</p>
+
+        <h2>Теорема Лагранжа</h2>
+        <p>Если \( f \) непрерывна на \([a, b]\) и дифференцируема на \((a, b)\), то:</p>
+        <p>\[ \exists c \in (a, b) : f(b) - f(a) = f'(c)(b - a) \]</p>
+
+        <h2>Теорема Коши</h2>
+        <p>Если \( f \) и \( g \) непрерывны на \([a, b]\), дифференцируемы на \((a, b)\) и \( g'(x) \neq 0 \) на \((a, b)\), то:</p>
+        <p>\[ \exists c \in (a, b) : \frac{f(b)-f(a)}{g(b)-g(a)} = \frac{f'(c)}{g'(c)} \]</p>
+
+        <h3>Пример применения</h3>
+        <p>Доказать, что \( |\sin x - \sin y| \leq |x - y| \):</p>
+        <p>По теореме Лагранжа:</p>
+        <p>\[ \sin x - \sin y = \cos c \cdot (x - y) \]</p>
+        <p>\[ |\sin x - \sin y| = |\cos c| \cdot |x - y| \leq |x - y| \]</p>
+    </div>
+
+    <button class="back-button" onclick="window.location.href='../index.html'">На главную</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script>
+        // Three.js анимация
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const geometry = new THREE.IcosahedronGeometry(window.innerWidth < 768 ? 10 : 15, 0);
+        const material = new THREE.MeshBasicMaterial({
+            color: 0x0057B7,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.4
+        });
+        const icosahedron = new THREE.Mesh(geometry, material);
+        scene.add(icosahedron);
+
+        camera.position.z = window.innerWidth < 768 ? 25 : 40;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            icosahedron.rotation.x += 0.005;
+            icosahedron.rotation.y += 0.008;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth/window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
