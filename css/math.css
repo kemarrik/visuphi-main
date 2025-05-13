@@ -1,0 +1,38 @@
+{% load static %}
+.theory-window {
+    padding: clamp(1rem, 3vw, 3rem);
+}
+
+.theory-content {
+    font-size: clamp(0.9rem, 1.2vw, 1.5rem);
+    line-height: 1.6;
+    padding-left: 2vw; /* Смещение текста вправо */
+}
+
+.theory-content h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.5rem, 2.5vw, 3rem);
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    margin-left: 2vw; /* Также смещаем заголовок вправо */
+}
+
+.back-button {
+    position: fixed;
+    top: clamp(0.5rem, 1vw, 1rem);
+    right: clamp(0.5rem, 1vw, 1rem);
+    padding: clamp(0.5rem, 1vw, 1rem) clamp(1rem, 2vw, 2rem);
+    background: #0057B7;
+    border: none;
+    border-radius: 0.5vw;
+    color: #FFD700;
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(0.8rem, 1vw, 1.2rem);
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.back-button:hover {
+    background: #FFD700;
+    color: #0057B7;
+}

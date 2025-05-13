@@ -1,0 +1,303 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Формулы Тейлора и Маклорена</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: #0A0F14;
+            color: #E0E0E0;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #0A0F14, #1F2525);
+            z-index: -1;
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="5" r="2" fill="#FFD700" opacity="0.5"/></svg>') repeat;
+            animation: particleFlow 20s linear infinite;
+            opacity: 0.15;
+        }
+
+        @keyframes particleFlow {
+            0% { transform: translateY(-100vh) translateX(-10vw); }
+            100% { transform: translateY(100vh) translateX(10vw); }
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            opacity: 0.5;
+            filter: drop-shadow(0 0 20px rgba(0, 87, 183, 0.7));
+        }
+
+        .theory-content {
+            padding: clamp(1rem, 3vw, 3rem);
+            position: relative;
+            z-index: 10;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .theory-content h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.5rem, 2.5vw, 3rem);
+            color: #0057B7;
+            text-shadow: 0 0 15px rgba(0, 87, 183, 0.8), 0 0 30px rgba(255, 215, 0, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+            margin-bottom: 1.5rem;
+        }
+
+        .theory-content p {
+            font-size: clamp(0.9rem, 1.2vw, 1.5rem);
+            line-height: 1.6;
+            color: #E0E0E0;
+        }
+
+        .neon-line {
+            width: clamp(10rem, 20vw, 25rem);
+            height: 0.2vw;
+            background: linear-gradient(90deg, #0057B7, #FFD700);
+            margin: 1rem auto;
+            box-shadow: 0 0 10px rgba(0, 87, 183, 0.8);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px rgba(0, 87, 183, 0.6), 0 0 20px rgba(255, 215, 0, 0.4); }
+            to { text-shadow: 0 0 20px rgba(0, 87, 183, 1), 0 0 40px rgba(255, 215, 0, 0.8); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scaleX(1); }
+            50% { transform: scaleX(1.2); }
+            100% { transform: scaleX(1); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(2rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-button {
+            position: fixed;
+            z-index: 9999;
+            top: clamp(0.5rem, 1vw, 1rem);
+            right: clamp(0.5rem, 1vw, 1rem);
+            padding: clamp(0.5rem, 1vw, 1rem) clamp(1rem, 2vw, 2rem);
+            background: linear-gradient(45deg, #0057B7, #FFD700);
+            border: none;
+            border-radius: 0.5vw;
+            color: #FFFFFF;
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(0.8rem, 1vw, 1.2rem);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 87, 183, 0.6);
+        }
+
+        .back-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        }
+        video {
+            width: 80%; /* Устанавливает ширину видео */
+            max-width: 800px; /* Ограничиваем максимальную ширину */
+            height: auto; /* Автоматическая высота для сохранения пропорций */
+            margin-bottom: 20px; /* Отступ от видео до текста */
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="particles"></div>
+    </div>
+    <div id="canvas-container"></div>
+
+    <div class="theory-content">
+        <h1>Функция модуля колебаний</h1>
+        <div class="neon-line"></div>
+        <video autoplay loop muted playsinline width="500">
+          <source src="{% static 'media/module.mp4' %}" type="video/mp4">
+          Ваш браузер не поддерживает видео.
+        </video>
+        <p>
+Если функция \( f \) непрерывна на отрезке, то это означает, что для любой точки \( x \) этого отрезка и для любого числа \( \varepsilon > 0 \) найдётся такое число \( \delta > 0 \) (зависящее от точки \( x \) и числа \( \varepsilon \)), что для всех точек \( x' \) отрезка, для которых
+</p>
+
+<p>\[ |x' - x| < \delta, \]</p>
+
+<p>выполняется неравенство</p>
+
+<p>\[ |f(x') - f(x)| < \varepsilon. \]</p>
+
+<p>
+Если число \( \delta \) можно выбрать не зависящим от точки \( x \), то функция \( f \) называется <strong>равномерно непрерывной</strong>.
+</p>
+
+<h2>Определение</h2>
+<p>
+Функция \( f \), заданная на отрезке \( [a, b] \), называется <strong>равномерно непрерывной</strong> на нём, если для любого \( \varepsilon > 0 \) существует такое \( \delta > 0 \), что для любых двух точек \( x, x' \in [a, b] \), таких что \( |x' - x| < \delta \), выполняется неравенство \( |f(x') - f(x)| < \varepsilon \).
+</p>
+
+<h3>Формулировка в символах</h3>
+
+<p>
+Обычная непрерывность:
+</p>
+
+<p>
+\[
+\forall x \in [a, b] \quad \forall \varepsilon > 0 \quad \exists \delta > 0 \quad \forall x' \in [a, b], \quad |x' - x| < \delta \Rightarrow |f(x') - f(x)| < \varepsilon
+\]
+</p>
+
+<p>
+Равномерная непрерывность:
+</p>
+
+<p>
+\[
+\forall \varepsilon > 0 \quad \exists \delta > 0 \quad \forall x, x' \in [a, b], \quad |x' - x| < \delta \Rightarrow |f(x') - f(x)| < \varepsilon
+\]
+</p>
+
+<h2>Примеры</h2>
+
+<ol>
+    <li>
+        <strong>Функция \( f(x) = x \)</strong> равномерно непрерывна на всей числовой оси \( \mathbb{R} \).<br>
+        При \( \delta = \varepsilon \):
+        \[
+        |f(x') - f(x)| = |x' - x| < \delta = \varepsilon
+        \]
+    </li>
+    <li>
+        <strong>Функция \( f(x) = x^2 \)</strong> не является равномерно непрерывной на \( \mathbb{R} \).<br>
+        \[
+        \lim_{x \to \infty} \left[(x + h)^2 - x^2\right] = \infty
+        \]
+        При любом \( \delta > 0 \) можно выбрать \( x \), что
+        \[
+        |x' - x| < \delta, \quad \text{но} \quad |f(x') - f(x)| > \varepsilon
+        \]
+    </li>
+</ol>
+
+<p>Ясно, что всякая равномерно непрерывная функция на отрезке непрерывна на нём. Обратное также верно.</p>
+
+<h2>Теорема Кантора</h2>
+<p><strong>Теорема:</strong> Функция, непрерывная на отрезке, равномерно непрерывна на нём.</p>
+
+<h3>Доказательство (от противного):</h3>
+<p>
+Предположим, что \( f \) непрерывна, но не равномерно непрерывна. Тогда существует \( \varepsilon_0 > 0 \), при котором для любого \( \delta > 0 \) существуют \( x, x' \in [a, b] \), такие что
+</p>
+
+<p>\[
+|x' - x| < \delta, \quad \text{но} \quad |f(x') - f(x)| \geq \varepsilon_0
+\]</p>
+
+<p>Возьмём \( \delta = \frac{1}{n} \). Тогда найдутся последовательности \( x_n \), \( x_n' \), что</p>
+
+<p>\[
+|x_n' - x_n| < \frac{1}{n}, \quad |f(x_n') - f(x_n)| \geq \varepsilon_0
+\]</p>
+
+<p>Из \( \{x_n\} \) можно выделить подпоследовательность \( x_{n_k} \to x_0 \in [a, b] \). Тогда и \( x_{n_k}' \to x_0 \), и по непрерывности:</p>
+
+<p>\[
+f(x_{n_k}) \to f(x_0), \quad f(x_{n_k}') \to f(x_0)
+\Rightarrow f(x_{n_k}') - f(x_{n_k}) \to 0
+\]</p>
+
+<p>Противоречие с \( |f(x_{n_k}') - f(x_{n_k})| \geq \varepsilon_0 \). Теорема доказана.</p>
+
+<h2>Колебания функции</h2>
+
+<p>
+Условие равномерной непрерывности можно переформулировать через <strong>колебания функции</strong>.
+</p>
+
+<p><strong>Определение:</strong> Колебание функции \( f \) на отрезке \( [a, b] \):
+\[
+\omega(f; [a, b]) = \sup_{x, x' \in [a, b]} |f(x) - f(x')|
+\]
+</p>
+
+<h3>Эквивалентное условие равномерной непрерывности:</h3>
+<p>
+Функция \( f \) равномерно непрерывна на \( [a, b] \) тогда и только тогда, когда
+\[
+\lim_{\delta \to 0} \sup_{\substack{x, x' \in [a, b] \\ |x - x'| < \delta}} |f(x) - f(x')| = 0
+\]
+</p>
+    </div>
+
+    <button class="back-button" onclick="window.location.href='/'">На главную</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const geometry = new THREE.IcosahedronGeometry(window.innerWidth < 768 ? 10 : 15, 0);
+        const material = new THREE.MeshBasicMaterial({ color: 0x0057B7, wireframe: true, transparent: true, opacity: 0.6 });
+        const icosahedron = new THREE.Mesh(geometry, material);
+        scene.add(icosahedron);
+
+        camera.position.z = window.innerWidth < 768 ? 25 : 40;
+
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.05;
+            const scale = 1 + 0.4 * Math.sin(time * 0.5);
+            icosahedron.scale.set(scale, scale, scale);
+            icosahedron.rotation.x += 0.008;
+            icosahedron.rotation.y += 0.01;
+            material.opacity = 0.4 + 0.3 * Math.sin(time * 0.4);
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+            const mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+            icosahedron.rotation.x = mouseY * 0.5;
+            icosahedron.rotation.y = mouseX * 0.5;
+        });
+    </script>
+</body>
+</html>
