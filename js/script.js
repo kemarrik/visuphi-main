@@ -37,7 +37,7 @@ document.addEventListener('mousemove', (e) => {
 // Данные для модального окна
 const subjectsData = {
     "math_analysis": [
-        { name: "Тейлор и Маклорен", url: "math_analysis/taylor-maclaurin.html" },
+        { name: "Тейлор и Маклорен", url: "math_analysis/taylor_maclaurin.html" },
         { name: "Лагранж, Коши и Ролль", url: "math_analysis/lagrange-cauchy-rolle.html" },
         { name: "Модуль колебаний", url: "math_analysis/module.html" }
     ],
